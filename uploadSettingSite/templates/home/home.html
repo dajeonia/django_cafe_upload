@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>UploadSetting</title>
+</head>
+<body>
+    <div style="display:flex; justify-content: center;
+        width: 100%; height: 100%;">
+        <div style="display:flex; justify-content: center;
+            width: 80%; height: 80%; min-width: 1200px; 
+            min-height: 500px;">
+            <div style="width:29%; margin: 10px; background-color:#f9f9fb; border:1px solid #cfcfd8;">
+                <div style="display: flex; width: 100%;">
+                    <form style="width:100%; height:400px; max-height: 400px; overflow-y:auto" action="{% url 'home:index' %}" method="post">
+                        {% csrf_token %}
+                        <h2 style="text-align:center;">유저 목록</h2>
+                        
+                        {% for user in user_list %}
+                        <div style="display:flex; justify-content:space-around; height:40px;">
+                            {% if user.id == selected_user_info.id %}
+                            <input style="align-self:center;" type="radio" id="chosen_id" name="chosen_id" value={{user.id}} checked="checked">
+                            {% else %}
+                            <input style="align-self:center;" type="radio" id="chosen_id" name="chosen_id" value={{user.id}}>
+                            {% endif %}
+                            <label style="align-self:center;" for={{user.id}}>{{user.naver_id}}</label><br>
+
+                        </div>
+                        {% endfor %}
+                        <div style="display:flex; justify-content:space-around;">
+                            <input type="submit" name="choose_user" value="선택">
+                            <input type="submit" name="delete_user" value="삭제">
+                        </div>
+                    </form>
+                </div>
+                <div style="display: flex; width: 100%;">
+                    <form style="width:100%; height:400px; max-height: 400px; overflow-y:auto" action="{% url 'home:index' %}" method="post">
+                        {% csrf_token %}
+                        <h2 style="text-align:center;">업로드 시간</h2>
+                        
+                        {% for upload_time in upload_time_list %}
+                        <div style="display:flex; justify-content:space-around; height:40px;">
+                            <input style="align-self:center;" type="radio" id="chosen_id" name="chosen_id" value={{upload_time.id}}>
+                            <label style="align-self:center;" for={{upload_time.id}}>{{upload_time.upload_hr}}:{{upload_time.upload_mn}}</label><br>
+
+                        </div>
+                        {% endfor %}
+                        <div style="display:flex; justify-content:space-around;">
+                            <div
+                                style="display:flex; justify-content:space-around; flex-direction:column; margin:20px;">
+                                <label for="upload_time_hr">업로드 시간(시)</label>
+                                <input style="width:30px" type="text" id="upload_time_hr" name="upload_time_hr" value=""><br>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:space-around; flex-direction:column; margin:20px;">
+                                <label for="upload_time_mn">업로드 시간(분)</label>
+                                <input style="width:30px" type="text" id="upload_time_mn" name="upload_time_mn" value=""><br>
+                            </div>
+                        </div>
+                        <div style="display:flex; justify-content:space-around;">
+                            <input type="submit" name="create_upload_time" value="추가">
+                            <input type="submit" name="delete_upload_time" value="삭제">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div
+                style="display:flex;flex-direction:column; width:69%; margin: 10px; background-color:#f9f9fb; border:1px solid #cfcfd8">
+                <h2 style="text-align:center;">유저 정보</h2>
+                <div style="display:flex; justify-content:space-around; margin:10px; border:1px solid #cfcfd8; border-radius:10px;">
+                    <div style="display:flex; flex-direction:row;">
+                        <form style="display:flex; justify-content:space-around;" action="{% url 'home:index' %}" method="post">
+                            {% csrf_token %}
+                            <div
+                                style="display:flex; justify-content:space-around; flex-direction:column; margin:20px;">
+                                <input type="hidden" id="id" name="id" value={{selected_user_info.id}}>
+                                <label for="naver_id">네이버 아이디</label>
+                                <input type="text" id="naver_id" name="naver_id" value={{selected_user_info.naver_id}}><br>
+
+                                <label for="naver_pw">네이버 비밀번호</label>
+                                <input type="text" id="naver_pw" name="naver_pw" value={{selected_user_info.naver_pw}}><br>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:space-around; flex-direction:column; margin:20px;">
+                                <label for="naver_cid">네이버 cid</label>
+                                <input type="text" id="naver_cid" name="naver_cid" value={{selected_user_info.naver_cid}}><br>
+
+                                <label for="naver_csec">네이버 csec</label>
+                                <input type="text" id="naver_csec" name="naver_csec" value={{selected_user_info.naver_csec}}><br>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:space-around; flex-direction:column; margin:20px;">
+                                <input type="submit" name="update_user" value="변경">
+                                <input type="submit" name="create_user" value="추가">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% if selected_user_info %}
+                <h2 style="text-align:center;">업로드 정보</h2>
+                <div style="display:flex; justify-content:space-around; margin:10px; border:1px solid #cfcfd8; border-radius:10px;">
+                    <div style="display:flex; flex-direction:row;">
+                        <form style="display:flex; justify-content:space-around;" action="{% url 'home:index' %}" method="post">
+                            {% csrf_token %}
+                            <div
+                                style="display:flex; justify-content:space-around; flex-direction:column; margin:20px;">
+                                <input type="hidden" id="user_id" name="user_id" value={{selected_user_info.id}}>
+                                <label for="from_board_url">가져올 게시판 url</label>
+                                <input type="text" id="from_board_url" name="from_board_url" value=""><br>
+
+                                <label for="from_club_id">가져올 게시판 clubid</label>
+                                <input type="text" id="from_club_id" name="from_club_id" value=""><br>
+
+                                <label for="from_menu_id">가져올 게시판 menuid</label>
+                                <input type="text" id="from_menu_id" name="from_menu_id" value=""><br>
+
+                                <div style="margin-top:20px;">
+                                    <label for="from_article_no">선택할 게시글 번호(start)</label>
+                                    <input style="width:30px" type="text" id="from_article_no" name="from_article_no" value=""><br>
+                                </div>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:space-around; flex-direction:column; margin:20px;">
+                                <label for="to_board_url">업로드할 게시판 url</label>
+                                <input type="text" id="to_board_url" name="to_board_url" value=""><br>
+
+                                <label for="to_club_id">업로드할 게시판 clubid</label>
+                                <input type="text" id="to_club_id" name="to_club_id" value=""><br>
+
+                                <label for="to_menu_id">업로드할 게시판 menuid</label>
+                                <input type="text" id="to_menu_id" name="to_menu_id" value=""><br>
+
+                                <div style="margin-top:20px;">
+                                    <label for="to_article_no">선택할 게시글 번호(end)</label>
+                                    <input style="width:30px" type="text" id="to_article_no" name="to_article_no" value=""><br>
+                                </div>
+                            </div>
+                            <div
+                                style="display:flex; justify-content:space-around; flex-direction:column; margin:20px;">
+                                <input type="submit" name="create_upload_list" value="추가">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <h2 style="text-align:center;">업로드 정보 목록</h2>
+                <div style="margin:10px; border:1px solid #cfcfd8; border-radius:10px;">
+                    <div style="height:100px; margin:10px;">
+                        <table style="width:100%; border: 1px solid #444444; border-collapse: collapse;" border="1">
+                            <th>가져올 게시판 url</th>
+                            <th>가져올 clubid</th>
+                            <th>가져올 menuid</th>
+                            <th>업로드할 게시판 url</th>
+                            <th>업로드할 clubid</th>
+                            <th>업로드할 menuid</th>
+                            <th>start no</th>
+                            <th>end no</th>
+                            <th></th>
+                            {% for upload_item in upload_list %}
+                            <tr style="background-color:white; border: 1px solid #444444; text-align:center;">
+                                <td>{{upload_item.from_board_url}}</td>
+                                <td>{{upload_item.from_club_id}}</td>
+                                <td>{{upload_item.from_menu_id}}</td>
+                                <td>{{upload_item.to_board_url}}</td>
+                                <td>{{upload_item.to_club_id}}</td>
+                                <td>{{upload_item.to_menu_id}}</td>
+                                <td>{{upload_item.from_article_no}}</td>
+                                <td>{{upload_item.to_article_no}}</td>
+                                <td><form action="{% url 'home:index' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" id="user_id" name="user_id" value={{selected_user_info.id}}>
+                                    <input type="hidden" id="upload_item_id" name="upload_item_id" value={{upload_item.id}}>
+                                    <input type="submit" name="delete_upload_item" value="삭제">
+                                </form></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
