@@ -1,6 +1,6 @@
 from inspect import trace
 import traceback
-import subprocess
+import os
 import time
 from pathlib import Path
 from django.shortcuts import render
@@ -13,6 +13,8 @@ BASE_DIR=Path(__file__).resolve().parent.parent
 def index(request):
     userList = UserSetting.objects.all()
     uploadTimeList = UploadTime.objects.all()
+    cronResult = os.popen('python manage.py crontab show').read()
+    print(cronResult.split('\n'))
     selectedUserInfo =None
     uploadList = None
     if 'choose_user' in request.POST:
@@ -29,7 +31,8 @@ def index(request):
             'user_list':userList,
             'selected_user_info':selectedUserInfo,
             'upload_list':uploadList,
-            'upload_time_list':uploadTimeList
+            'upload_time_list':uploadTimeList,
+            'cron_result':cronResult
         })
     elif 'update_user' in request.POST:
         update_user =  UserSetting.objects.get(id=request.POST['id'])
@@ -41,7 +44,8 @@ def index(request):
         return render(request, 'home/home.html', 
         {
             'user_list':userList,
-            'upload_time_list':uploadTimeList
+            'upload_time_list':uploadTimeList,
+            'cron_result':cronResult
         })
     elif 'create_user' in request.POST:
         user = UserSetting(naver_id=request.POST['naver_id'], naver_pw=request.POST['naver_pw'],
@@ -50,7 +54,8 @@ def index(request):
         return render(request, 'home/home.html', 
         {
             'user_list':userList,
-            'upload_time_list':uploadTimeList
+            'upload_time_list':uploadTimeList,
+            'cron_result':cronResult
         })
     elif 'delete_user' in request.POST:
         chosen_user = UserSetting.objects.get(id=request.POST['chosen_id'])
@@ -58,7 +63,8 @@ def index(request):
         return render(request, 'home/home.html', 
         {
             'user_list':userList,
-            'upload_time_list':uploadTimeList
+            'upload_time_list':uploadTimeList,
+            'cron_result':cronResult
         })
     elif 'create_upload_list' in request.POST:
         upload_info = BoardMatching(from_board_url=request.POST['from_board_url'],
@@ -87,7 +93,8 @@ def index(request):
             'user_list':userList,
             'selected_user_info':selectedUserInfo,
             'upload_list':uploadList,
-            'upload_time_list':uploadTimeList
+            'upload_time_list':uploadTimeList,
+            'cron_result':cronResult
         })
     elif 'delete_upload_item' in request.POST:
         chosen_upload_item = BoardMatching.objects.get(id = request.POST['upload_item_id'])
@@ -106,21 +113,21 @@ def index(request):
             'user_list':userList,
             'selected_user_info':selectedUserInfo,
             'upload_list':uploadList,
-            'upload_time_list':uploadTimeList
+            'upload_time_list':uploadTimeList,
+            'cron_result':cronResult
         })
     elif 'create_upload_time' in request.POST:
         UploadTime(upload_hr=int(request.POST['upload_time_hr']), upload_mn=int(request.POST['upload_time_mn'])).save()
         f=open(str(BASE_DIR)+"/uploadSettingSite/cron_setting_info.py", 'w')
         f.write('CRON_INFO = \"'+' '.join([str(upload_time.upload_hr)+":"+str(upload_time.upload_mn) for upload_time in uploadTimeList])+'\"')
         f.close()
-        
-        result = subprocess.check_output('python manage.py crontab add', shell=True)
-        print(result)
+
 
         return render(request, 'home/home.html', 
         {
             'user_list':userList,
-            'upload_time_list':uploadTimeList
+            'upload_time_list':uploadTimeList,
+            'cron_result':cronResult
         })
     elif 'delete_upload_time' in request.POST:
         chosen_upload_time = UploadTime.objects.get(id=request.POST['chosen_id'])
@@ -129,17 +136,41 @@ def index(request):
         f.write('CRON_INFO = \"'+' '.join([str(upload_time.upload_hr)+":"+str(upload_time.upload_mn) for upload_time in uploadTimeList])+'\"')
         f.close()
 
-        result = subprocess.check_output('python manage.py crontab add', shell=True)
-        print(result)
+
+        
 
         return render(request, 'home/home.html', 
         {
             'user_list':userList,
-            'upload_time_list':uploadTimeList
+            'upload_time_list':uploadTimeList,
+            'cron_result':cronResult
+        })
+    elif 'refresh_cron' in request.POST:
+        os.system('python manage.py crontab remove')
+        time.sleep(3)
+        os.system('python manage.py crontab add')
+        time.sleep(3)
+        cronResult = os.popen('python manage.py crontab show').read()
+        return render(request, 'home/home.html',
+        {
+            'user_list':userList,
+            'upload_time_list':uploadTimeList,
+            'cron_result':cronResult
+        })
+    elif 'remove_cron' in request.POST:
+        os.system('python manage.py crontab remove')
+        time.sleep(3)
+        cronResult = os.popen('python manage.py crontab show').read()
+        return render(request, 'home/home.html',
+        {
+            'user_list':userList,
+            'upload_time_list':uploadTimeList,
+            'cron_result':cronResult
         })
     else:
         return render(request, 'home/home.html',
         {
             'user_list':userList,
-            'upload_time_list':uploadTimeList
+            'upload_time_list':uploadTimeList,
+            'cron_result':cronResult
         })

@@ -64,6 +64,19 @@
                         </div>
                     </form>
                 </div>
+                <div>
+                    <h2 style="text-align:center;">Crontab 로그</h2>
+                    <div style="background:white; margin:10px;">
+                        {{cron_result}}
+                    </div>
+                    <form action="{% url 'home:index' %}" method="post">
+                        {% csrf_token %}
+                        <div style="display:flex; justify-content:space-around;">
+                            <button type="submit" name="refresh_cron">갱신</button>
+                            <button type="submit" name="remove_cron">삭제</button>
+                        </div>
+                    </form>
+                </div>
             </div>
             <div
                 style="display:flex;flex-direction:column; width:69%; margin: 10px; background-color:#f9f9fb; border:1px solid #cfcfd8">

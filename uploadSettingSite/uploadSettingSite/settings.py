@@ -128,4 +128,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 #CRONTAB
-CRONJOBS = [(cron_info.split(':')[1]+' '+cron_info.split(':')[0]+' * * *', 'uploadSettingSite.cron.printTime', '>> '+os.path.join(BASE_DIR, 'test.log')+' 2>&1') for cron_info in CRON_INFO.split()]
+CRONJOBS = [(cron_info.split(':')[1]+' '+cron_info.split(':')[0]+' * * *', 'uploadSettingSite.main_func.main_function', '>> '+os.path.join(BASE_DIR, 'test.log')+' 2>&1') for cron_info in CRON_INFO.split()]

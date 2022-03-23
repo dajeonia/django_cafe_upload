@@ -1,0 +1,316 @@
+mkcho1997
+rscafe
+mkcho1997
+rscafe
+
+
+ 2022-03-22 15:00:01.187783
+Traceback (most recent call last):
+  File "/Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/manage.py", line 22, in <module>
+    main()
+  File "/Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/manage.py", line 18, in main
+    execute_from_command_line(sys.argv)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/django/core/management/__init__.py", line 446, in execute_from_command_line
+    utility.execute()
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/django/core/management/__init__.py", line 440, in execute
+    self.fetch_command(subcommand).run_from_argv(self.argv)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/django/core/management/base.py", line 414, in run_from_argv
+    self.execute(*args, **cmd_options)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/django/core/management/base.py", line 460, in execute
+    output = self.handle(*args, **options)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/django_crontab/management/commands/crontab.py", line 29, in handle
+    Crontab().run_job(options['jobhash'])
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/django_crontab/crontab.py", line 126, in run_job
+    job = self.__get_job_by_hash(job_hash)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/django_crontab/crontab.py", line 171, in __get_job_by_hash
+    raise RuntimeError(
+RuntimeError: No job with hash 21f2f812fe5a01ba4db988e5438f6bc9 found. It seems the crontab is out of sync with your settings.CRONJOBS. Run "python manage.py crontab add" again to resolve this issue!
+mkcho1997
+rscafe
+mkcho1997
+rscafe
+mkcho1997
+rscafe
+mkcho1997
+rscafe
+Failed to complete cronjob at ('48 14 * * *', 'uploadSettingSite.cron.printTime', '>> /Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/test.log 2>&1')
+Traceback (most recent call last):
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/django_crontab/crontab.py", line 145, in run_job
+    func(*job_args, **job_kwargs)
+  File "/Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/uploadSettingSite/cron.py", line 4, in printTime
+    print("\n\n",datetime.datetime.now())
+AttributeError: type object 'datetime.datetime' has no attribute 'datetime'
+
+
+ 2022-03-23 14:55:01.250177
+mkcho1997
+rscafe
+/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py:1043: InsecureRequestWarning: Unverified HTTPS request is being made to host 'openapi.naver.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/1.26.x/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py:1043: InsecureRequestWarning: Unverified HTTPS request is being made to host 'openapi.naver.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/1.26.x/advanced-usage.html#ssl-warnings
+  warnings.warn(
+Failed to complete cronjob at ('22 16 * * *', 'uploadSettingSite.main_func.main_function', '>> /Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/test.log 2>&1')
+Traceback (most recent call last):
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 174, in _new_conn
+    conn = connection.create_connection(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/util/connection.py", line 95, in create_connection
+    raise err
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 61] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 703, in urlopen
+    httplib_response = self._make_request(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 398, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 239, in request
+    super(HTTPConnection, self).request(method, url, body=body, headers=headers)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1037, in _send_output
+    self.send(msg)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 975, in send
+    self.connect()
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 205, in connect
+    conn = self._new_conn()
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 186, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x10621e6b0>: Failed to establish a new connection: [Errno 61] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/django_crontab/crontab.py", line 145, in run_job
+    func(*job_args, **job_kwargs)
+  File "/Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/uploadSettingSite/main_func.py", line 255, in main_function
+    access_token = get_naver_token(driver, user)
+  File "/Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/uploadSettingSite/main_func.py", line 54, in get_naver_token
+    driver.get('https://nid.naver.com/nidlogin.login')
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/webdriver.py", line 437, in get
+    self.execute(Command.GET, {'url': url})
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/webdriver.py", line 423, in execute
+    response = self.command_executor.execute(driver_command, params)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/remote_connection.py", line 333, in execute
+    return self._request(command_info[0], url, body=data)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/remote_connection.py", line 355, in _request
+    resp = self._conn.request(method, url, body=body, headers=headers)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/request.py", line 78, in request
+    return self.request_encode_body(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/request.py", line 170, in request_encode_body
+    return self.urlopen(method, url, **extra_kw)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/poolmanager.py", line 376, in urlopen
+    response = conn.urlopen(method, u.request_uri, **kw)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 785, in urlopen
+    retries = retries.increment(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/util/retry.py", line 592, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=50018): Max retries exceeded with url: /session/44486e226e27775c8dcef6d18c1ae9ec/url (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x10621e6b0>: Failed to establish a new connection: [Errno 61] Connection refused'))
+
+
+ 2022-03-23 16:22:01.592454
+권한 이미 허용됨
+AAAAOWkYFZJdgxXgb_vHbTk-gEDSqNYmG_Reu8VvDMLMESDORS0idjQVsk8C_XMS6yrOlJxmJeGZD96po1AmZpdPQFc
+mkcho1997 업로드
+{"message":{"@type":"response","@service":"korea.naverkoreaservice.community.cafe","@version":"1.0.0","status":"200","result":{"msg":"Success","cafeUrl":"4uloveme","articleId":372636,"articleUrl":"https://cafe.naver.com/4uloveme/372636"}}}
+{"message":{"@type":"response","@service":"korea.naverkoreaservice.community.cafe","@version":"1.0.0","status":"200","result":{"msg":"Success","cafeUrl":"4uloveme","articleId":372637,"articleUrl":"https://cafe.naver.com/4uloveme/372637"}}}
+성공 : 2, 실패 : 0
+/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py:1043: InsecureRequestWarning: Unverified HTTPS request is being made to host 'openapi.naver.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/1.26.x/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py:1043: InsecureRequestWarning: Unverified HTTPS request is being made to host 'openapi.naver.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/1.26.x/advanced-usage.html#ssl-warnings
+  warnings.warn(
+Failed to complete cronjob at ('53 16 * * *', 'uploadSettingSite.main_func.main_function', '>> /Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/test.log 2>&1')
+Traceback (most recent call last):
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 174, in _new_conn
+    conn = connection.create_connection(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/util/connection.py", line 95, in create_connection
+    raise err
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 61] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 703, in urlopen
+    httplib_response = self._make_request(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 398, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 239, in request
+    super(HTTPConnection, self).request(method, url, body=body, headers=headers)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1037, in _send_output
+    self.send(msg)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 975, in send
+    self.connect()
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 205, in connect
+    conn = self._new_conn()
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 186, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x107f5a5f0>: Failed to establish a new connection: [Errno 61] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/django_crontab/crontab.py", line 145, in run_job
+    func(*job_args, **job_kwargs)
+  File "/Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/uploadSettingSite/main_func.py", line 255, in main_function
+    access_token = get_naver_token(driver, user)
+  File "/Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/uploadSettingSite/main_func.py", line 54, in get_naver_token
+    driver.get('https://nid.naver.com/nidlogin.login')
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/webdriver.py", line 437, in get
+    self.execute(Command.GET, {'url': url})
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/webdriver.py", line 423, in execute
+    response = self.command_executor.execute(driver_command, params)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/remote_connection.py", line 333, in execute
+    return self._request(command_info[0], url, body=data)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/remote_connection.py", line 355, in _request
+    resp = self._conn.request(method, url, body=body, headers=headers)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/request.py", line 78, in request
+    return self.request_encode_body(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/request.py", line 170, in request_encode_body
+    return self.urlopen(method, url, **extra_kw)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/poolmanager.py", line 376, in urlopen
+    response = conn.urlopen(method, u.request_uri, **kw)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 785, in urlopen
+    retries = retries.increment(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/util/retry.py", line 592, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=50309): Max retries exceeded with url: /session/401d1dc6dfd61522794b317bcc67bcff/url (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x107f5a5f0>: Failed to establish a new connection: [Errno 61] Connection refused'))
+
+
+ 2022-03-23 16:53:01.042405
+권한 이미 허용됨
+AAAAOWkYFZJdgxXgb_vHbTk-gEDSqNYmG_Reu8VvDMLMESDORS0idjQVsk8C_XMS6yrOlJxmJeGZD96po1AmZpdPQFc
+mkcho1997 업로드
+{"message":{"@type":"response","@service":"korea.naverkoreaservice.community.cafe","@version":"1.0.0","status":"200","result":{"msg":"Success","cafeUrl":"4uloveme","articleId":372638,"articleUrl":"https://cafe.naver.com/4uloveme/372638"}}}
+{"message":{"@type":"response","@service":"korea.naverkoreaservice.community.cafe","@version":"1.0.0","status":"200","result":{"msg":"Success","cafeUrl":"4uloveme","articleId":372639,"articleUrl":"https://cafe.naver.com/4uloveme/372639"}}}
+성공 : 2, 실패 : 0
+/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py:1043: InsecureRequestWarning: Unverified HTTPS request is being made to host 'openapi.naver.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/1.26.x/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py:1043: InsecureRequestWarning: Unverified HTTPS request is being made to host 'openapi.naver.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/1.26.x/advanced-usage.html#ssl-warnings
+  warnings.warn(
+Failed to complete cronjob at ('17 17 * * *', 'uploadSettingSite.main_func.main_function', '>> /Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/test.log 2>&1')
+Traceback (most recent call last):
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 174, in _new_conn
+    conn = connection.create_connection(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/util/connection.py", line 95, in create_connection
+    raise err
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 61] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 703, in urlopen
+    httplib_response = self._make_request(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 398, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 239, in request
+    super(HTTPConnection, self).request(method, url, body=body, headers=headers)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1282, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1328, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1277, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 1037, in _send_output
+    self.send(msg)
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/http/client.py", line 975, in send
+    self.connect()
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 205, in connect
+    conn = self._new_conn()
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connection.py", line 186, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x10809a560>: Failed to establish a new connection: [Errno 61] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/django_crontab/crontab.py", line 145, in run_job
+    func(*job_args, **job_kwargs)
+  File "/Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/uploadSettingSite/main_func.py", line 255, in main_function
+    access_token = get_naver_token(driver, user)
+  File "/Users/mkcho1997/Project/naver-cafe-api/naver-cafe-api-server/uploadSettingSite/uploadSettingSite/main_func.py", line 54, in get_naver_token
+    driver.get('https://nid.naver.com/nidlogin.login')
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/webdriver.py", line 437, in get
+    self.execute(Command.GET, {'url': url})
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/webdriver.py", line 423, in execute
+    response = self.command_executor.execute(driver_command, params)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/remote_connection.py", line 333, in execute
+    return self._request(command_info[0], url, body=data)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/selenium/webdriver/remote/remote_connection.py", line 355, in _request
+    resp = self._conn.request(method, url, body=body, headers=headers)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/request.py", line 78, in request
+    return self.request_encode_body(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/request.py", line 170, in request_encode_body
+    return self.urlopen(method, url, **extra_kw)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/poolmanager.py", line 376, in urlopen
+    response = conn.urlopen(method, u.request_uri, **kw)
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 813, in urlopen
+    return self.urlopen(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py", line 785, in urlopen
+    retries = retries.increment(
+  File "/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/util/retry.py", line 592, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='localhost', port=50699): Max retries exceeded with url: /session/45417c6a622091d23a1057ed5b58bd21/url (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x10809a560>: Failed to establish a new connection: [Errno 61] Connection refused'))
+
+
+ 2022-03-23 17:17:01.143741
+권한 이미 허용됨
+AAAAOWkYFZJdgxXgb_vHbTk-gEDSqNYmG_Reu8VvDMLMESDORS0idjQVsk8C_XMS6yrOlJxmJeGZD96po1AmZpdPQFc
+mkcho1997 업로드
+{"message":{"@type":"response","@service":"korea.naverkoreaservice.community.cafe","@version":"1.0.0","status":"200","result":{"msg":"Success","cafeUrl":"4uloveme","articleId":372640,"articleUrl":"https://cafe.naver.com/4uloveme/372640"}}}
+{"message":{"@type":"response","@service":"korea.naverkoreaservice.community.cafe","@version":"1.0.0","status":"200","result":{"msg":"Success","cafeUrl":"4uloveme","articleId":372641,"articleUrl":"https://cafe.naver.com/4uloveme/372641"}}}
+성공 : 2, 실패 : 0
+/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py:1043: InsecureRequestWarning: Unverified HTTPS request is being made to host 'openapi.naver.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/1.26.x/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py:1043: InsecureRequestWarning: Unverified HTTPS request is being made to host 'openapi.naver.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/1.26.x/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py:1043: InsecureRequestWarning: Unverified HTTPS request is being made to host 'openapi.naver.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/1.26.x/advanced-usage.html#ssl-warnings
+  warnings.warn(
+/Users/mkcho1997/.local/share/virtualenvs/naver-cafe-api-server-0o79OMZY/lib/python3.10/site-packages/urllib3/connectionpool.py:1043: InsecureRequestWarning: Unverified HTTPS request is being made to host 'openapi.naver.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/1.26.x/advanced-usage.html#ssl-warnings
+  warnings.warn(
+
+
+ 2022-03-23 17:45:01.802428
+권한 이미 허용됨
+AAAAOWkYFZJdgxXgb_vHbTk-gEDSqNYmG_Reu8VvDMLMESDORS0idjQVsk8C_XMS6yrOlJxmJeGZD96po1AmZpdPQFc
+mkcho1997 업로드
+{"message":{"@type":"response","@service":"korea.naverkoreaservice.community.cafe","@version":"1.0.0","status":"200","result":{"msg":"Success","cafeUrl":"4uloveme","articleId":372642,"articleUrl":"https://cafe.naver.com/4uloveme/372642"}}}
+{"message":{"@type":"response","@service":"korea.naverkoreaservice.community.cafe","@version":"1.0.0","status":"200","result":{"msg":"Success","cafeUrl":"4uloveme","articleId":372643,"articleUrl":"https://cafe.naver.com/4uloveme/372643"}}}
+성공 : 2, 실패 : 0
+권한 이미 허용됨
+AAAANij9ZtQzlcYBUerxOP6FKvB8y-SIf3PULm0vuEBylAqw2EV5IDiZhgNo0HE1ZlXUSqqK5TYlGT_GLmKw_5ov19g
+rscafe 업로드
+{"message":{"@type":"response","@service":"korea.naverkoreaservice.community.cafe","@version":"1.0.0","status":"200","result":{"msg":"Success","cafeUrl":"4uloveme","articleId":372644,"articleUrl":"https://cafe.naver.com/4uloveme/372644"}}}
+{"message":{"@type":"response","@service":"korea.naverkoreaservice.community.cafe","@version":"1.0.0","status":"200","result":{"msg":"Success","cafeUrl":"4uloveme","articleId":372645,"articleUrl":"https://cafe.naver.com/4uloveme/372645"}}}
+성공 : 2, 실패 : 0
