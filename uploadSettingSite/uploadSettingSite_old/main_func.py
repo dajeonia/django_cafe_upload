@@ -11,7 +11,6 @@ import re
 import urllib.request
 import datetime
 import pymysql
-import base64
 
 from bs4 import BeautifulSoup
 from requests import get
@@ -70,9 +69,9 @@ def get_naver_token(driver, user):
     
     try:
         time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@class="check_all"]').click()
+        driver.find_element(By.XPATH, '//*[@class="item_text"]').click()
         time.sleep(1)
-        driver.find_element(By.XPATH, '//*[@class="btn agree"]').click()
+        driver.find_element(By.XPATH, '//*[@class="btn_unit_on"]').click()
         time.sleep(1)
     except:
         print("권한 이미 허용됨")
@@ -249,7 +248,6 @@ def wantit_cafe_upload(driver, access_token, upload_item):
     header = "Bearer " + access_token
     clubid = upload_item.to_club_id
     menuid = upload_item.to_menu_id
-    from_article_no = upload_item.from_article_no
     url = "https://openapi.naver.com/v1/cafe/" + clubid + "/menu/" + menuid + "/articles"
     today_ymd = datetime.datetime.today().strftime("%Y-%m-%d")
     today_ymd_hms = datetime.datetime.today().strftime("%Y%m%d%H%M%S")
@@ -259,7 +257,7 @@ def wantit_cafe_upload(driver, access_token, upload_item):
     '''
     conn = DBConnect()
     curs = conn.cursor(pymysql.cursors.DictCursor)
-    sqlstr = "SELECT wr_id, wr_subject, original_text, wr_2, wr_6, wr_11, img_all, mb_id, wr_datetime FROM g5_write_realseller2 WHERE wr_4 = '0' AND wr_id not IN (SELECT wr_id FROM g5_naver_upload) ORDER BY wr_id desc LIMIT "+str(from_article_no)
+    sqlstr = "SELECT wr_id, wr_subject, wr_9, wr_2, wr_11, wr_datetime FROM g5_write_realseller2 WHERE wr_4 = '0' AND wr_id not IN (SELECT wr_id FROM g5_naver_upload) ORDER BY wr_id desc LIMIT 10"
     curs.execute(sqlstr)
     rows = curs.fetchall()
     conn.close()
@@ -279,50 +277,14 @@ def wantit_cafe_upload(driver, access_token, upload_item):
             rescodew = e.getcode()
         
         if(rescodew==200):
-            conn3 = DBConnect()
-            curs3 = conn3.cursor(pymysql.cursors.DictCursor)
-            sqlstr3 = "SELECT mb_hp FROM g5_member WHERE mb_id = '"+wdata['mb_id']+"'"
-            curs3.execute(sqlstr3)
-            rows3 = curs3.fetchall()
-            conn3.close()
-            
-            mb_hp_r = ''
-            for hp in rows3 :
-                mb_hp_r = hp['mb_hp']
-
-            if(mb_hp_r==''):
-                mb_hp_r = ''
-            else:
-                mb_hp_r = '연락처: '+mb_hp_r+'<br>'
-
-            wurl = "<a href='https://wantit.real-seller.com/?step=main&init=in_page&url=https://wantit.real-seller.com/list_detail_item.php?item="+str(wdata['wr_id'])+"^maker="+wdata['wr_6']+"'>워닛에서 보기</a>"
-
             subject = urllib.parse.quote(wdata['wr_subject'])
-            original_text = wdata['original_text']
-            original_text = original_text.encode('ascii')
-            original_text = base64.b64decode(original_text)
-            original_text = original_text.decode('UTF-8')
-            content = urllib.parse.quote('<br><br><br>'+wurl+'<br><br>가격: '+format(int(wdata['wr_2']), ',')+'원<br>'+mb_hp_r+'<br><br><br><br>'+original_text)
-            files=[]
-            data = {'subject': subject, 'content': content}
-
+            content = urllib.parse.quote('<br>가격: '+format(int(wdata['wr_2']))+'원<br><br>'+wdata['wr_9'])
             imgurl = wdata['wr_11']
             urllib.request.urlretrieve(imgurl, 'temp_img/' + '/image'+str(today_ymd_hms)+".jpg")
-            time.sleep(3)
+            time.sleep(10)
+            data = {'subject': subject, 'content': content}
+            files=[]
             files.append(('image', ('temp_img/' + '/image'+str(today_ymd_hms)+".jpg", open('temp_img/' + '/image'+str(today_ymd_hms)+".jpg", 'rb'), 'image/jpeg',{'Expires': '0'})))
-            os.remove('temp_img/' + '/image'+str(today_ymd_hms)+".jpg")
-
-            img_all = wdata['img_all']
-            img_all_array = img_all.split('|')
-            iaa_cnt = 1
-            for iaa in img_all_array:
-                if(iaa_cnt!=1):
-                    urllib.request.urlretrieve(iaa, 'temp_img/' + '/image'+'_'+str(iaa_cnt)+'_'+str(today_ymd_hms)+".jpg")
-                    time.sleep(3)
-                    files.append(('image', ('temp_img/' + '/image'+'_'+str(iaa_cnt)+'_'+str(today_ymd_hms)+".jpg", open('temp_img/' + '/image'+'_'+str(iaa_cnt)+'_'+str(today_ymd_hms)+".jpg", 'rb'), 'image/jpeg',{'Expires': '0'})))
-                    os.remove('temp_img/' + '/image'+'_'+str(iaa_cnt)+'_'+str(today_ymd_hms)+".jpg")
-                iaa_cnt += 1
-
             headers = {'Authorization': header }
             response = requests.post(url, headers = headers, data=data, files=files, verify=False)
             rescode = response.status_code
@@ -338,6 +300,7 @@ def wantit_cafe_upload(driver, access_token, upload_item):
             else:
                 print("Error Code:" + rescode)
 
+            os.remove('temp_img/' + '/image'+str(today_ymd_hms)+".jpg")
         else:
             conn2 = DBConnect()
             curs2 = conn2.cursor(pymysql.cursors.DictCursor)
@@ -362,27 +325,17 @@ def main_function():
         driver = webdriver.Chrome('/home/ubuntu/chromedriver', chrome_options=chrome_options)
         checkFolder('temp_img/')
         for user in UserSetting.objects.all():
-            try:
-                access_token = get_naver_token(driver, user)
-            except Exception as e:
-                print(user.naver_id + " 로그인 실패: ", e)
-                continue
+            access_token = get_naver_token(driver, user)
             print(access_token)
             print(user.naver_id+" 업로드")
             uploadList =BoardMatching.objects.filter(user_no = user.id)
             for upload_item in uploadList:
                 if(upload_item.from_board_url=='wantit'):
-                    try:
-                        res = wantit_cafe_upload(driver, access_token, upload_item)
-                    except Exception as e:
-                        print("워닛 상품 가져오기 및 업로드 실패", e)
+                    res = wantit_cafe_upload(driver, access_token, upload_item)
                 else:
-                    try:
-                        res = crawl_cafe_contents(driver, access_token, upload_item)
-                        print("성공 : "+str(res[1]) +", 실패 : "+str(res[0]))
-                    except Exception as e:
-                        print("카페글 가져오기 및 업로드 실패", e)
-
+                    res = crawl_cafe_contents(driver, access_token, upload_item)
+                    print("성공 : "+str(res[1]) +", 실패 : "+str(res[0]))
+                    
         driver.quit()
         deleteAllFilesInFolder('temp_img/')
         print("\n\n")

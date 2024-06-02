@@ -21,5 +21,4 @@ from . import views
 urlpatterns = [
     path('home/', include('home.urls')),
     path('admin/', admin.site.urls),
-	path('cron/', include('user_setting.urls')),
 ]

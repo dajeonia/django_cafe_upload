@@ -129,5 +129,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #CRONTAB
 CRONJOBS = [
-    ('* */1 * * *', 'uploadSettingSite.main_func.main_function', '>> '+os.path.join(BASE_DIR, 'test.log')+' 2>&1')
+    ('0 */1 * * *', 'uploadSettingSite.main_func.main_function', '>> '+os.path.join(BASE_DIR, 'test.log')+' 2>&1')
 ]

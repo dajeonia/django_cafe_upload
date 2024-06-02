@@ -24,7 +24,8 @@ from board_matching.models import BoardMatching
 from user_setting.models import UserSetting
 from upload_time.models import UploadTime
 
-
+from .get_band_article import get_band_article
+from .get_naver_search import get_naver_search
 
 def checkFolder(tempImgPath):
     try:
@@ -109,6 +110,62 @@ type : 1
 type : 2
 중고폰 단가표
 """
+
+def upload_cafe_new(access_token, article, upload_item):
+    header = "bearer " + access_token
+    clubid = upload_item.to_club_id
+    menuid = upload_item.to_menu_id
+    url = "https://openapi.naver.com/v1/cafe/" + clubid + "/menu/" + menuid + "/articles"
+    subject = urllib.parse.quote(article['subject'])
+    content = urllib.parse.quote(article['content'])
+    data = urlencode({'subject': subject, 'content': content}).encode()
+    request = urllib.request.request(url, data=data)
+    request.add_header("authorization", header)
+    response = urllib.request.urlopen(request, context=ssl._create_unverified_context())
+    rescode = response.getcode()
+    if(rescode==200):
+        response_body = response.read()
+        print(response_body.decode('utf-8'))
+    else:
+        print("error code:" + rescode)
+
+def crawl_naver_search(driver, access_token, upload_item):
+    result = [0 for _ in range(2)] 
+    article = get_naver_search(driver)
+    try:
+        upload_cafe_new(access_token, article, upload_item)
+        result[1]+=1
+    except exception as e:
+        result[0]+=1
+        print('업로드 실패', e)
+        print(traceback.format_exc())
+    deleteallfilesinfolder('temp_img/')
+    return result
+
+
+def crawl_band_contents(driver, access_token, upload_item):
+    result = [0 for _ in range(2)] 
+    try:
+        list = get_band_article(upload_item.from_board_url)
+    except exception as e:
+        print("잘못된 밴드 예외 발생", e)
+    for ar in list:
+        try:
+            upload_cafe_new(access_token, ar, upload_item)
+            result[1]+=1
+        except exception as e:
+            result[0]+=1
+            print('업로드 실패', e)
+            print(traceback.format_exc())
+            """
+            for xx in list:
+                content = ''
+                content += xx.text.strip()
+                print(content)
+            """
+    deleteallfilesinfolder('temp_img/')
+    return result
+
 def crawl_cafe_contents(driver, access_token, upload_item):
     result = [0 for _ in range(2)] 
     """
@@ -376,6 +433,17 @@ def main_function():
                         res = wantit_cafe_upload(driver, access_token, upload_item)
                     except Exception as e:
                         print("워닛 상품 가져오기 및 업로드 실패", e)
+                elif ('band.us' in upload_item.from_board_url):
+                    try:
+                        print("성공 : "+str(res[1]) +", 실패 : "+str(res[0]))
+                        res = crawl_band_contents(driver, access_token, upload_item)
+                    except Exception as e:
+                        print("밴드 failed ", e)
+                elif (upload_item.from_board_url=='naver'):
+                    try:
+                        res = crawl_naver_search(driver, access_token, upload_item)
+                    except Exception as e:
+                        print("네이버 검색 failed ", e)
                 else:
                     try:
                         res = crawl_cafe_contents(driver, access_token, upload_item)

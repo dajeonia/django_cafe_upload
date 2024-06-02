@@ -13,37 +13,38 @@ import datetime
 import pymysql
 import base64
 
-from bs4 import BeautifulSoup
+from bs4 import beautifulsoup
 from requests import get
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from urllib.error import HTTPError
+from selenium.webdriver.common.by import by
+from urllib.error import httperror
 from urllib.parse import urlencode
 
-from board_matching.models import BoardMatching
-from user_setting.models import UserSetting
-from upload_time.models import UploadTime
+from board_matching.models import boardmatching
+from user_setting.models import usersetting
+from upload_time.models import uploadtime
 
+from get_band_article import get_band_article
+from get_naver_search import get_naver_search
 
-
-def checkFolder(tempImgPath):
+def checkfolder(tempimgpath):
     try:
-        if not os.path.exists(tempImgPath):
-            os.makedirs(tempImgPath)
-    except OSError:
+        if not os.path.exists(tempimgpath):
+            os.makedirs(tempimgpath)
+    except oserror:
         print ('os error')
         sys.exit(0)
 
-def deleteAllFilesInFolder(tempImgPath):
+def deleteallfilesinfolder(tempimgpath):
     try:
-        if os.path.exists(tempImgPath):
-            for file in os.scandir(tempImgPath):
+        if os.path.exists(tempimgpath):
+            for file in os.scandir(tempimgpath):
                 os.remove(file.path)
         else:
-            print("Directory Not Found")
+            print("directory not found")
             sys.exit(0)
-    except OSError:
-        print('OS Error')
+    except oserror:
+        print('os error')
         sys.exit(0)
 
 def get_naver_token(driver, user):
@@ -55,13 +56,13 @@ def get_naver_token(driver, user):
 
     id=user.naver_id
     pw=user.naver_pw
-    driver.execute_script("document.getElementsByName('id')[0].value=\'"+id+"\'")
-    driver.execute_script("document.getElementsByName('pw')[0].value=\'"+pw+"\'")
+    driver.execute_script("document.getelementsbyname('id')[0].value=\'"+id+"\'")
+    driver.execute_script("document.getelementsbyname('pw')[0].value=\'"+pw+"\'")
 
-    driver.find_element(By.XPATH, '//*[@id="log.login"]').click()
+    driver.find_element(by.xpath, '//*[@id="log.login"]').click()
     time.sleep(1)
 
-    state = "REWERWERTATE"
+    state = "rewerwertate"
     
     req_url='https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=%s&redirect_uri=%s&state=%s' % (naver_cid, naver_redirect, state)
     driver.get(req_url)
@@ -70,9 +71,9 @@ def get_naver_token(driver, user):
     
     try:
         time.sleep(3)
-        driver.find_element(By.XPATH, '//*[@class="check_all"]').click()
+        driver.find_element(by.xpath, '//*[@class="check_all"]').click()
         time.sleep(1)
-        driver.find_element(By.XPATH, '//*[@class="btn agree"]').click()
+        driver.find_element(by.xpath, '//*[@class="btn agree"]').click()
         time.sleep(1)
     except:
         print("권한 이미 허용됨")
@@ -86,7 +87,7 @@ def get_naver_token(driver, user):
     code = re.split('&state=', temp[1])[0]
     url = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code" + "&client_id=" + naver_cid   + "&client_secret=" + naver_csec + "&redirect_uri=" + naver_redirect + "'&code=" + code + "&state=" + state
     
-    headers = {'X-Naver-Client-Id': naver_cid, 'X-Naver-Client-Secret':naver_redirect}
+    headers = {'x-naver-client-id': naver_cid, 'x-naver-client-secret':naver_redirect}
     response = requests.get(url,headers=headers)
     rescode = response.status_code
     token = ''
@@ -95,11 +96,11 @@ def get_naver_token(driver, user):
 
         token = response_body["access_token"]
     else:
-        print("Error Code:", rescode)
-        return None
+        print("error code:", rescode)
+        return none
 
     if len(token) == 0:
-        return None
+        return none
     return token
 
 """
@@ -109,23 +110,78 @@ type : 1
 type : 2
 중고폰 단가표
 """
+def upload_cafe_new(access_token, article, upload_item):
+    header = "bearer " + access_token
+    clubid = upload_item.to_club_id
+    menuid = upload_item.to_menu_id
+    url = "https://openapi.naver.com/v1/cafe/" + clubid + "/menu/" + menuid + "/articles"
+    subject = urllib.parse.quote(article['subject'])
+    content = urllib.parse.quote(article['content'])
+    data = urlencode({'subject': subject, 'content': content}).encode()
+    request = urllib.request.request(url, data=data)
+    request.add_header("authorization", header)
+    response = urllib.request.urlopen(request, context=ssl._create_unverified_context())
+    rescode = response.getcode()
+    if(rescode==200):
+        response_body = response.read()
+        print(response_body.decode('utf-8'))
+    else:
+        print("error code:" + rescode)
+
+def crawl_naver_search(driver, access_token, upload_item):
+    result = [0 for _ in range(2)] 
+    article = get_naver_search(driver)
+    try:
+        upload_cafe_new(access_token, article, upload_item)
+        result[1]+=1
+    except exception as e:
+        result[0]+=1
+        print('업로드 실패', e)
+        print(traceback.format_exc())
+    deleteallfilesinfolder('temp_img/')
+    return result
+
+
+def crawl_band_contents(driver, access_token, upload_item):
+    result = [0 for _ in range(2)] 
+    try:
+        list = get_band_article(upload_item.from_board_url)
+    except exception as e:
+        print("잘못된 밴드 예외 발생", e)
+    for ar in list:
+        try:
+            upload_cafe_new(access_token, ar, upload_item)
+            result[1]+=1
+        except exception as e:
+            result[0]+=1
+            print('업로드 실패', e)
+            print(traceback.format_exc())
+            """
+            for xx in list:
+                content = ''
+                content += xx.text.strip()
+                print(content)
+            """
+    deleteallfilesinfolder('temp_img/')
+    return result
+
 def crawl_cafe_contents(driver, access_token, upload_item):
     result = [0 for _ in range(2)] 
     """
     0 : failed,
     1 : success
     """
-    addr=upload_item.from_board_url+'?iframe_url=/ArticleList.nhn%3Fsearch.clubid='+upload_item.from_club_id+'%26search.menuid='+upload_item.from_menu_id+'%26userDisplay=50%26search.page=1'
+    addr=upload_item.from_board_url+'?iframe_url=/articlelist.nhn%3fsearch.clubid='+upload_item.from_club_id+'%26search.menuid='+upload_item.from_menu_id+'%26userdisplay=50%26search.page=1'
     
     driver.get(addr)
     driver.switch_to.frame('cafe_main')
     html = driver.page_source
-    soup = BeautifulSoup(html, 'html.parser')
+    soup = beautifulsoup(html, 'html.parser')
     soup = soup.find_all(class_='article-board m-tcol-c')[1]
-    a_num_list = soup.findAll("div",{"class":"inner_number"})
-    a_title_list = soup.findAll("a",{"class":"article"})
-    a_writer_list = soup.findAll("a",{"class":"m-tcol-c"})
-    a_regdate_list = soup.findAll("td",{"class":"td_date"})
+    a_num_list = soup.findall("div",{"class":"inner_number"})
+    a_title_list = soup.findall("a",{"class":"article"}) # content[1]
+    a_writer_list = soup.findall("a",{"class":"m-tcol-c"})
+    a_regdate_list = soup.findall("td",{"class":"td_date"})
     total_list = []
     article_link_list = []
 
@@ -136,48 +192,48 @@ def crawl_cafe_contents(driver, access_token, upload_item):
         list.append(c.text)
         list.append(d.text)
         total_list.append(list)
-        article_link_list.append("https://cafe.naver.com/ArticleRead.nhn?clubid="+upload_item.from_club_id+"&page=1&userDisplay=50&menuid="+upload_item.from_menu_id+"&boardtype=L&articleid=" + a.text + "&referrerAllArticles=false")
+        article_link_list.append("https://cafe.naver.com/articleread.nhn?clubid="+upload_item.from_club_id+"&page=1&userdisplay=50&menuid="+upload_item.from_menu_id+"&boardtype=l&articleid=" + a.text + "&referrerallarticles=false")
         """
         for x in total_list:
         """
     for j in range(upload_item.to_article_no-1, upload_item.from_article_no-2, -1):
         try:
             time.sleep(50)
-            adrs = "https://cafe.naver.com/ArticleRead.nhn?clubid="+upload_item.from_club_id+"&page=1&userDisplay=50&menuid="+upload_item.from_menu_id+"&boardtype=L&articleid=" + total_list[j][0] +"&referrerAllArticles=false"
+            adrs = "https://cafe.naver.com/articleread.nhn?clubid="+upload_item.from_club_id+"&page=1&userdisplay=50&menuid="+upload_item.from_menu_id+"&boardtype=l&articleid=" + total_list[j][0] +"&referrerallarticles=false"
             driver.get(adrs)
             time.sleep(10)
             driver.switch_to.frame('cafe_main')
             html = driver.page_source
-            soup = BeautifulSoup(html, 'html.parser')
+            soup = beautifulsoup(html, 'html.parser')
             list = soup.select('div.se-main-container')
             time.sleep(1)
             imgs = soup.select('a.se-module-image-link>img')
-            imgList=[]
+            imglist=[]
             for k in range(len(imgs)):
                 src = imgs[k].get('src')
                 if (len(src)):
                     list[0]=str(list[0]).replace(src, "#"+str(k))
-                    saveUrl = 'temp_img/' + '/image'+str(k+1)+".jpg"
+                    saveurl = 'temp_img/' + '/image'+str(k+1)+".jpg"
 
-                    req = urllib.request.Request(src)
+                    req = urllib.request.request(src)
                     try:
-                        imgUrl = urllib.request.urlopen(req, context=ssl._create_unverified_context()).read()
-                        with open(saveUrl, "wb") as f:
-                            f.write(imgUrl)
-                    except urllib.error.HTTPError:
+                        imgurl = urllib.request.urlopen(req, context=ssl._create_unverified_context()).read()
+                        with open(saveurl, "wb") as f:
+                            f.write(imgurl)
+                    except urllib.error.httperror:
                         print('에러')
                         sys.exit(0)
-                    imgList.append('image'+str(k+1)+".jpg")
+                    imglist.append('image'+str(k+1)+".jpg")
                 
-            total_list[j].append(str(list[0]).replace("\"","\'"))
-        except Exception as e:
+            total_list[j].append(str(list[0]).replace("\"","\'")) # list[4]
+        except exception as e:
             result[0]+=1
             print('업로드 실패', e)
             print(traceback.format_exc())
             continue
-        if len(imgList):
+        if len(imglist):
             try:
-                upload_cafe_with_image(access_token, total_list[j], imgList, upload_item)
+                upload_cafe_with_image(access_token, total_list[j], imglist, upload_item)
                 result[1]+=1
             except:
                 result[0]+=1
@@ -187,7 +243,7 @@ def crawl_cafe_contents(driver, access_token, upload_item):
             try:
                 upload_cafe(access_token, total_list[j], upload_item)
                 result[1]+=1
-            except Exception as e:
+            except exception as e:
                 result[0]+=1
                 print('업로드 실패', e)
                 print(traceback.format_exc())
@@ -197,69 +253,70 @@ def crawl_cafe_contents(driver, access_token, upload_item):
                     content += xx.text.strip()
                     print(content)
                 """
-        deleteAllFilesInFolder('temp_img/')
+        deleteallfilesinfolder('temp_img/')
     return result
 
-def upload_cafe(access_token, contentList, upload_item):
-    header = "Bearer " + access_token
+
+def upload_cafe(access_token, contentlist, upload_item):
+    header = "bearer " + access_token
     clubid = upload_item.to_club_id
     menuid = upload_item.to_menu_id
     url = "https://openapi.naver.com/v1/cafe/" + clubid + "/menu/" + menuid + "/articles"
-    subject = urllib.parse.quote(contentList[1])
-    content = urllib.parse.quote(contentList[4])
+    subject = urllib.parse.quote(contentlist[1])
+    content = urllib.parse.quote(contentlist[4])
     data = urlencode({'subject': subject, 'content': content}).encode()
-    request = urllib.request.Request(url, data=data)
-    request.add_header("Authorization", header)
+    request = urllib.request.request(url, data=data)
+    request.add_header("authorization", header)
     response = urllib.request.urlopen(request, context=ssl._create_unverified_context())
     rescode = response.getcode()
     if(rescode==200):
         response_body = response.read()
         print(response_body.decode('utf-8'))
     else:
-        print("Error Code:" + rescode)
+        print("error code:" + rescode)
 
-def upload_cafe_with_image(access_token, contentList, imgList, upload_item):
-    header = "Bearer " + access_token
+def upload_cafe_with_image(access_token, contentlist, imglist, upload_item):
+    header = "bearer " + access_token
     clubid = upload_item.to_club_id
     menuid = upload_item.to_menu_id
     url = "https://openapi.naver.com/v1/cafe/" + clubid + "/menu/" + menuid + "/articles"
-    subject = urllib.parse.quote(contentList[1])
-    content = urllib.parse.quote(contentList[4])
+    subject = urllib.parse.quote(contentlist[1])
+    content = urllib.parse.quote(contentlist[4])
     data = {'subject': subject, 'content': content}
     files=[]
-    for img in imgList:
-        files.append(('image', (img, open('temp_img/'+"/"+img, 'rb'), 'image/jpeg',{'Expires': '0'})))
-    headers = {'Authorization': header }
-    response = requests.post(url, headers = headers, data=data, files=files, verify=False)
+    for img in imglist:
+        files.append(('image', (img, open('temp_img/'+"/"+img, 'rb'), 'image/jpeg',{'expires': '0'})))
+    headers = {'authorization': header }
+    response = requests.post(url, headers = headers, data=data, files=files, verify=false)
     rescode = response.status_code
     if(rescode==200):
         print(response.text)
     else:
-        print("Error Code:" + rescode)
+        print("error code:" + rescode)
 
 '''
-DBConnect
-워닛에서 사용하는 DB호출
+dbconnect
+워닛에서 사용하는 db호출
 '''
-def DBConnect():
+def dbconnect():
     conn =pymysql.connect(host='awsrealseller.ciatnef2nuaa.ap-northeast-2.rds.amazonaws.com', user='gid', password='biggains2018^^', db='gidseller', charset='utf8')
     return conn
 
 def wantit_cafe_upload(driver, access_token, upload_item):
-    header = "Bearer " + access_token
+    header = "bearer " + access_token
     clubid = upload_item.to_club_id
     menuid = upload_item.to_menu_id
     from_article_no = upload_item.from_article_no
     url = "https://openapi.naver.com/v1/cafe/" + clubid + "/menu/" + menuid + "/articles"
-    today_ymd = datetime.datetime.today().strftime("%Y-%m-%d")
-    today_ymd_hms = datetime.datetime.today().strftime("%Y%m%d%H%M%S")
+    today_ymd = datetime.datetime.today().strftime("%y-%m-%d")
+    today_ymd_hms = datetime.datetime.today().strftime("%y%m%d%h%m%s")
 
     '''
     워닛 상품 테이블에서 당일 업로드된 워닛 상품중 네이버에 상품 등록을 하지 않은 상품 10개의 정보 출력
     '''
-    conn = DBConnect()
-    curs = conn.cursor(pymysql.cursors.DictCursor)
-    sqlstr = "SELECT wr_id, wr_subject, original_text, wr_2, wr_6, wr_11, img_all, mb_id, wr_datetime FROM g5_write_realseller2 WHERE wr_4 = '0' AND wr_id not IN (SELECT wr_id FROM g5_naver_upload) ORDER BY wr_id desc LIMIT "+str(from_article_no)
+    conn = dbconnect()
+    curs = conn.cursor(pymysql.cursors.dictcursor)
+    sqlstr = "select wr_id, wr_subject, original_text, wr_2, wr_6, wr_11, img_all, mb_id, wr_datetime from g5_write_realseller2 where wr_4 = '0' and wr_id not in (select wr_id from g5_naver_upload) order by wr_id desc limit "+str(from_article_no)
     curs.execute(sqlstr)
     rows = curs.fetchall()
     conn.close()
@@ -275,13 +332,13 @@ def wantit_cafe_upload(driver, access_token, upload_item):
         '''
         try:
             responsew = urllib.request.urlopen(wdata['wr_11'])
-        except HTTPError as e:
+        except httperror as e:
             rescodew = e.getcode()
         
         if(rescodew==200):
-            conn3 = DBConnect()
-            curs3 = conn3.cursor(pymysql.cursors.DictCursor)
-            sqlstr3 = "SELECT mb_hp FROM g5_member WHERE mb_id = '"+wdata['mb_id']+"'"
+            conn3 = dbconnect()
+            curs3 = conn3.cursor(pymysql.cursors.dictcursor)
+            sqlstr3 = "select mb_hp from g5_member where mb_id = '"+wdata['mb_id']+"'"
             curs3.execute(sqlstr3)
             rows3 = curs3.fetchall()
             conn3.close()
@@ -301,7 +358,7 @@ def wantit_cafe_upload(driver, access_token, upload_item):
             original_text = wdata['original_text']
             original_text = original_text.encode('ascii')
             original_text = base64.b64decode(original_text)
-            original_text = original_text.decode('UTF-8')
+            original_text = original_text.decode('utf-8')
             content = urllib.parse.quote('<br><br><br>'+wurl+'<br><br>가격: '+format(int(wdata['wr_2']), ',')+'원<br>'+mb_hp_r+'<br><br><br><br>'+original_text)
             files=[]
             data = {'subject': subject, 'content': content}
@@ -309,7 +366,7 @@ def wantit_cafe_upload(driver, access_token, upload_item):
             imgurl = wdata['wr_11']
             urllib.request.urlretrieve(imgurl, 'temp_img/' + '/image'+str(today_ymd_hms)+".jpg")
             time.sleep(3)
-            files.append(('image', ('temp_img/' + '/image'+str(today_ymd_hms)+".jpg", open('temp_img/' + '/image'+str(today_ymd_hms)+".jpg", 'rb'), 'image/jpeg',{'Expires': '0'})))
+            files.append(('image', ('temp_img/' + '/image'+str(today_ymd_hms)+".jpg", open('temp_img/' + '/image'+str(today_ymd_hms)+".jpg", 'rb'), 'image/jpeg',{'expires': '0'})))
             os.remove('temp_img/' + '/image'+str(today_ymd_hms)+".jpg")
 
             img_all = wdata['img_all']
@@ -319,70 +376,82 @@ def wantit_cafe_upload(driver, access_token, upload_item):
                 if(iaa_cnt!=1):
                     urllib.request.urlretrieve(iaa, 'temp_img/' + '/image'+'_'+str(iaa_cnt)+'_'+str(today_ymd_hms)+".jpg")
                     time.sleep(3)
-                    files.append(('image', ('temp_img/' + '/image'+'_'+str(iaa_cnt)+'_'+str(today_ymd_hms)+".jpg", open('temp_img/' + '/image'+'_'+str(iaa_cnt)+'_'+str(today_ymd_hms)+".jpg", 'rb'), 'image/jpeg',{'Expires': '0'})))
+                    files.append(('image', ('temp_img/' + '/image'+'_'+str(iaa_cnt)+'_'+str(today_ymd_hms)+".jpg", open('temp_img/' + '/image'+'_'+str(iaa_cnt)+'_'+str(today_ymd_hms)+".jpg", 'rb'), 'image/jpeg',{'expires': '0'})))
                     os.remove('temp_img/' + '/image'+'_'+str(iaa_cnt)+'_'+str(today_ymd_hms)+".jpg")
                 iaa_cnt += 1
 
-            headers = {'Authorization': header }
-            response = requests.post(url, headers = headers, data=data, files=files, verify=False)
+            headers = {'authorization': header }
+            response = requests.post(url, headers = headers, data=data, files=files, verify=false)
             rescode = response.status_code
             if(rescode==200):
-                conn1 = DBConnect()
-                curs1 = conn1.cursor(pymysql.cursors.DictCursor)
+                conn1 = dbconnect()
+                curs1 = conn1.cursor(pymysql.cursors.dictcursor)
                 sqlstr1 = 'insert into g5_naver_upload(wr_id, na_datetime) values(%s, %s)'
-                today_ymd_hms2 = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+                today_ymd_hms2 = datetime.datetime.today().strftime("%y-%m-%d %h:%m:%s")
                 curs1.execute(sqlstr1, (wdata['wr_id'], today_ymd_hms2))
                 conn1.commit()
                 conn1.close()
                 print(response.text)
             else:
-                print("Error Code:" + rescode)
+                print("error code:" + rescode)
 
         else:
-            conn2 = DBConnect()
-            curs2 = conn2.cursor(pymysql.cursors.DictCursor)
+            conn2 = dbconnect()
+            curs2 = conn2.cursor(pymysql.cursors.dictcursor)
             sqlstr2 = 'insert into g5_naver_upload(wr_id, na_datetime) values(%s, %s)'
-            today_ymd_hms2 = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+            today_ymd_hms2 = datetime.datetime.today().strftime("%y-%m-%d %h:%m:%s")
             curs2.execute(sqlstr2, (wdata['wr_id'], today_ymd_hms2))
             conn2.commit()
             conn2.close()
         time.sleep(10)
 
+
 def main_function():
     d = datetime.datetime.now()
     print(d)
-    current_upload_times = UploadTime.objects.filter(upload_hr = int(d.hour))
+    current_upload_times = uploadtime.objects.filter(upload_hr = int(d.hour))
     if current_upload_times:
-        chrome_options =webdriver.ChromeOptions()
+        chrome_options =webdriver.chromeoptions()
 
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-dev-shm-usage')
 
-        driver = webdriver.Chrome('/home/ubuntu/chromedriver', chrome_options=chrome_options)
-        checkFolder('temp_img/')
-        for user in UserSetting.objects.all():
+        driver = webdriver.chrome('/home/ubuntu/chromedriver', chrome_options=chrome_options)
+        checkfolder('temp_img/')
+        for user in usersetting.objects.all():
             try:
                 access_token = get_naver_token(driver, user)
-            except Exception as e:
+            except exception as e:
                 print(user.naver_id + " 로그인 실패: ", e)
                 continue
             print(access_token)
             print(user.naver_id+" 업로드")
-            uploadList =BoardMatching.objects.filter(user_no = user.id)
-            for upload_item in uploadList:
+            uploadlist =boardmatching.objects.filter(user_no = user.id)
+            for upload_item in uploadlist:
                 if(upload_item.from_board_url=='wantit'):
                     try:
                         res = wantit_cafe_upload(driver, access_token, upload_item)
-                    except Exception as e:
+                    except exception as e:
                         print("워닛 상품 가져오기 및 업로드 실패", e)
+                elif ('band.us' in upload_item.from_board_url):
+                    try:
+                        print("성공 : "+str(res[1]) +", 실패 : "+str(res[0]))
+                        res = crawl_band_contents(driver, access_token, upload_item)
+                    except exception as e:
+                        print("밴드 failed ", e)
+                elif (upload_item.from_board_url=='naver'):
+                    try:
+                        res = crawl_naver_search(driver, access_token, upload_item)
+                    except exception as e:
+                        print("네이버 검색 failed ", e)
                 else:
                     try:
                         res = crawl_cafe_contents(driver, access_token, upload_item)
                         print("성공 : "+str(res[1]) +", 실패 : "+str(res[0]))
-                    except Exception as e:
+                    except exception as e:
                         print("카페글 가져오기 및 업로드 실패", e)
 
         driver.quit()
-        deleteAllFilesInFolder('temp_img/')
+        deleteallfilesinfolder('temp_img/')
         print("\n\n")
